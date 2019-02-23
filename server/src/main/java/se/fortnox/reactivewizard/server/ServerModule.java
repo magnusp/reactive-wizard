@@ -6,8 +6,10 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 import io.netty.buffer.ByteBuf;
 import io.reactivex.netty.protocol.http.server.RequestHandler;
+import rx.Observable;
 import se.fortnox.reactivewizard.binding.AutoBindModule;
 import se.fortnox.reactivewizard.binding.scanners.InjectAnnotatedScanner;
+import se.fortnox.reactivewizard.jaxrs.CallFilter;
 import se.fortnox.reactivewizard.jaxrs.JaxRsMeta;
 import se.fortnox.reactivewizard.jaxrs.JaxRsRequestHandler;
 import se.fortnox.reactivewizard.jaxrs.JaxRsResourcesProvider;
@@ -52,8 +54,7 @@ public class ServerModule implements AutoBindModule {
         JaxRsResourceRegistry jaxRsResourceRegistry = new JaxRsResourceRegistry();
         binder.bind(JaxRsResourceRegistry.class).toInstance(jaxRsResourceRegistry);
         binder.bind(JaxRsResourcesProvider.class).toInstance(jaxRsResourceRegistry);
-
-
+        binder.bind(CallFilter.class).toInstance((jaxRsRequest, jaxRsResource) -> Observable.just(true)); // No-op
 
         for (Class<?> cls : injectAnnotatedScanner.getClasses()) {
             Optional<Class<?>> jaxRsClass = JaxRsMeta.getJaxRsClass(cls);
